@@ -25,8 +25,16 @@ import { fileURLToPath } from "url";
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+let currentDirname = process.cwd();
+try {
+  if (typeof import.meta !== "undefined" && import.meta.url) {
+    const __filename = fileURLToPath(import.meta.url);
+    currentDirname = path.dirname(__filename);
+  }
+} catch (e) {
+  // Fallback to process.cwd() in bundlers/serverless
+}
+const __dirname = currentDirname;
 
 const app = express();
 const PORT = 3000;
@@ -48,6 +56,16 @@ const ai = new GoogleGenAI({
   },
 });
 
+const DEFAULT_FIREBASE_CONFIG = {
+  projectId: "zinc-lotus-0bndl",
+  appId: "1:565062106080:web:921a31222f9ed356c08985",
+  apiKey: "AIzaSyBcHdqfomUk8aVxZtJt_ikAzoXxsBeGiWI",
+  authDomain: "zinc-lotus-0bndl.firebaseapp.com",
+  firestoreDatabaseId: "ai-studio-trchintpbihc-c01cc28b-612f-452b-b71b-d52fbe45e667",
+  storageBucket: "zinc-lotus-0bndl.firebasestorage.app",
+  messagingSenderId: "565062106080"
+};
+
 // Initialize Firestore
 let db: any = null;
 try {
@@ -66,7 +84,7 @@ try {
     };
     console.log("Firebase initialized using Environment Variables configuration.");
   } else {
-    // 2. Fallback to local config file (check multiple possible path variations for Vercel/bundlers compatibility)
+    // 2. Fallback to local config file
     const configPath = path.join(process.cwd(), "firebase-applet-config.json");
     const fallbackPath1 = path.join(__dirname, "firebase-applet-config.json");
     const fallbackPath2 = path.join(__dirname, "..", "firebase-applet-config.json");
@@ -90,17 +108,19 @@ try {
       } catch (err: any) {
         console.error(`Failed to parse configuration file at ${finalConfigPath}:`, err);
       }
-    } else {
-      console.warn("WARNING: firebase-applet-config.json could not be located in any known path variations.");
     }
+  }
+
+  // 3. Fallback to bundled DEFAULT_FIREBASE_CONFIG if file or env vars are missing
+  if (!firebaseConfig) {
+    firebaseConfig = DEFAULT_FIREBASE_CONFIG;
+    console.log("Firebase initialized using embedded DEFAULT_FIREBASE_CONFIG fallback.");
   }
 
   if (firebaseConfig) {
     const firebaseApp = initializeApp(firebaseConfig);
     db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId || undefined);
     console.log("Firebase Firestore client SDK initialized successfully.");
-  } else {
-    console.warn("WARNING: Firebase Firestore configuration not found (neither Env Vars nor firebase-applet-config.json).");
   }
 } catch (err) {
   console.error("Failed to initialize Firestore client SDK:", err);
