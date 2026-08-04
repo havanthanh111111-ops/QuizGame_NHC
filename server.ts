@@ -21,8 +21,12 @@ import {
   limit 
 } from "firebase/firestore/lite";
 import fsSync from "fs";
+import { fileURLToPath } from "url";
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3000;
@@ -58,7 +62,7 @@ try {
       storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
       messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
       appId: process.env.FIREBASE_APP_ID,
-      firestoreDatabaseId: process.env.FIREBASE_DATABASE_ID || ""
+      firestoreDatabaseId: process.env.FIREBASE_DATABASE_ID || "ai-studio-trchintpbihc-c01cc28b-612f-452b-b71b-d52fbe45e667"
     };
     console.log("Firebase initialized using Environment Variables configuration.");
   } else {
