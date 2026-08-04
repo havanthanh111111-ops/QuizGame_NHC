@@ -1722,6 +1722,11 @@ Mỗi trạm có 'name' (Ví dụ: Thung Lũng Chết, Đầm Lầy Sương Mù.
   }
 });
 
+// Fallback 404 handler for API requests to avoid hanging functions in serverless environments
+app.use("/api", (req, res) => {
+  res.status(404).json({ error: `API endpoint not found: ${req.method} ${req.originalUrl}` });
+});
+
 // Start the server with Vite Integration or Static serving
 async function start() {
   if (process.env.VERCEL) {
