@@ -1349,7 +1349,7 @@ app.post("/api/lessons/:id/generate/:gameKey", async (req, res) => {
     const lesson = lessons[lessonIdx];
     const lessonContent = lesson.content;
 
-    let systemInstruction = "Bạn là một giáo viên chuyên nghiệp và chuyên gia thiết kế trò chơi giáo dục bằng Tiếng Việt. Nhiệm vụ của bạn là đọc nội dung bài học được cung cấp và thiết kế bộ câu hỏi/nội dung trò chơi tương ứng theo đúng cấu trúc dữ liệu JSON được yêu cầu. Đảm bảo tất cả câu hỏi và phản hồi bằng Tiếng Việt chuẩn xác, mang tính giáo dục cao.";
+    let systemInstruction = "Bạn là một giáo viên chuyên nghiệp và chuyên gia thiết kế trò chơi giáo dục bằng Tiếng Việt. Nhiệm vụ của bạn là đọc nội dung bài học được cung cấp và thiết kế bộ câu hỏi/nội dung trò chơi tương ứng theo đúng cấu trúc dữ liệu JSON được yêu cầu. Đảm bảo tất cả câu hỏi, phương án trả lời và lời giải thích bằng Tiếng Việt chuẩn xác, mang tính giáo dục cao.\n\nQUY TẮC BẮT BUỘC VỀ CÔNG THỨC TOÁN HỌC / KHOA HỌC (LATEX):\n- Tất cả công thức toán học, biểu thức, ký hiệu, lũy thừa (ví dụ: $10^6$), phân số (ví dụ: $\\frac{a}{b}$), căn thức, biến số ($x$, $y$), đơn vị ($m/s^2$), công thức hóa học ($H_2O$) BẮT BUỘC phải được bao quanh bởi dấu đô la `$`: `$công_thức$` đối với công thức dòng (inline) hoặc `$$công_thức$$` đối với công thức khối (block).\n- Tuyệt đối KHÔNG viết ký tự thô như 10^6, x^2, a/b mà không có dấu `$` bao quanh. Ví dụ đúng: `$10^6$`, `$x^2 + y^2 = z^2$`, `$\\frac{1}{2}$`.";
     let prompt = "";
     let responseSchema: any = null;
 
